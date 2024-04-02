@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+
 /* The Meyer Reset */
 
 /* http://meyerweb.com/eric/tools/css/reset/ 
@@ -47,4 +49,44 @@ q:before, q:after {
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
+}
+
+/* My Code */
+
+* {
+	box-sizing: border-box;
+	user-select: none;
+}
+
+body {
+	background-color: rgb(218, 220, 215);
+    overflow: hidden;
+	font-family: Oswald, Arial, sans-serif;
+	font-weight: 800;
+}
+
+.container_5x5 {
+    display: grid;
+    grid-template-rows: repeat(5, 1fr);
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.container_5x5 > div:hover {
+    cursor: pointer;
+}
+
+.div {
+    width: 75px;
+    height: 75px;
+    border: 4.5px solid rgb(0, 0, 0);
+    border-radius: 15px;
+    background-color: rgb(200, 200, 195);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
