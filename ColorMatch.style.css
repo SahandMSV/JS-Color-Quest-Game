@@ -104,6 +104,8 @@ body {
     left: 15px;
     top: 50%;
     transform: translateY(-50%);
+    
+    z-index: 2;
 }
 
 .colorBtns {
@@ -125,4 +127,35 @@ body {
 .colorBtns:hover {
     font-size: 1.3rem;
     cursor: pointer;
+}
+
+/* Color Palette Ticks */
+
+.tickContainer {
+    height: 415px;
+    
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    
+    position: absolute;
+    left: 60px;
+    top: 50%;
+    transform: translateY(calc(-50% + 2px));
+    
+    z-index: 1;
+}
+
+.tickContainer > svg {
+    width: 10px;
+}
+
+.tickIcons {
+    transition: transform 0.25s ease;
+}
+
+.transformed {
+    transform: translateX(40px);
 }

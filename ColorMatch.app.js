@@ -32,3 +32,34 @@ for (let i = 0; i < 5; i++) {
     newBox.style.backgroundColor = primaryColors[i];
     colorPalette.appendChild(newBox);
 }
+
+// ColorBtn Objects
+
+const colorBtns = [];
+let currentColor;
+
+for (let i = 1; i <= 5; i++) {
+    const newColorBtn = {
+        button: document.querySelector(`.colorBtn${i}`),
+        tick: document.querySelector(`.tickIcon${i}`),
+        color: primaryColors[i - 1],
+        isClicked: false,
+    };
+    colorBtns.push(newColorBtn);
+}
+
+function resetAllColorBtns() {
+    colorBtns.forEach(btn => {
+        btn.isClicked = false;
+        btn.tick.classList.remove("transformed");
+    });
+}
+
+document.querySelectorAll(".colorBtns").forEach((colorBtn, index) => {
+    colorBtn.addEventListener("click", () => {
+        resetAllColorBtns();
+        colorBtns[index].isClicked = true;
+        currentColor = colorBtns[index].color;
+        colorBtns[index].tick.classList.toggle("transformed");
+    });
+});
