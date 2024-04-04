@@ -33,6 +33,8 @@ function AddToColorArray(color, index) {
     } else if (color === primaryColors[4]) {
         divColors_5x5[ index ] = "5";
     }
+    
+    checkForWin();
 }
 
 allBoxes.forEach((box, index) => {
@@ -97,3 +99,19 @@ document.querySelectorAll(".colorBtns").forEach((colorBtn, index) => {
         colorBtns[index].tick.classList.toggle("transformed");
     });
 });
+
+// Winning Sequence
+
+let won = false;
+function checkForWin() {
+    if (divColors_5x5.length === 25 && !(divColors_5x5.includes(undefined))) {
+        if (divNumbers_5x5.toString() !== divColors_5x5.toString()) {
+            won = false;
+            document.body.style.backgroundColor = "rgb(245, 184, 184)";
+        }
+        else if (divNumbers_5x5.toString() === divColors_5x5.toString()) {
+            won = true;
+            document.body.style.backgroundColor = "rgb(202, 240, 177)";
+        }
+    }
+}
