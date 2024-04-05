@@ -107,11 +107,50 @@ function checkForWin() {
     if (divColors_5x5.length === 25 && !(divColors_5x5.includes(undefined))) {
         if (divNumbers_5x5.toString() !== divColors_5x5.toString()) {
             won = false;
+            stopWinningSequence();
             document.body.style.backgroundColor = "rgb(245, 184, 184)";
         }
         else if (divNumbers_5x5.toString() === divColors_5x5.toString()) {
             won = true;
+            startWinningSequence();
             document.body.style.backgroundColor = "rgb(202, 240, 177)";
         }
     }
+}
+
+const randomColors = [
+    "rgb(255, 165, 0)",
+    "rgb(255, 255, 102)",
+    "rgb(255, 128, 171)",
+    "rgb(255, 192, 203)",
+    "rgb(102, 178, 255)",
+    "rgb(102, 255, 102)",
+    "rgb(255, 153, 204)",
+    "rgb(255, 255, 153)",
+    "rgb(204, 153, 255)",
+    "rgb(255, 204, 102)",
+    "rgb(255, 204, 153)",
+    "rgb(255, 255, 153)",
+    "rgb(102, 255, 178)",
+    "rgb(102, 178, 255)",
+    "rgb(102, 178, 255)",
+    "rgb(255, 128, 171)",
+];
+
+let timeoutId;
+
+function startWinningSequence() {
+    timeoutId = setInterval(() => {
+        grid_5x5.querySelectorAll("div").forEach(div => {
+            const color = randomColors[Math.floor(Math.random() * randomColors.length)];
+            div.style.backgroundColor = color;
+        });
+    }, 300);
+}
+
+function stopWinningSequence() {
+    clearInterval(timeoutId);
+        grid_5x5.querySelectorAll("div").forEach((div, index) => {
+            div.style.backgroundColor = primaryColors[divColors_5x5[index] - 1]
+        });
 }
