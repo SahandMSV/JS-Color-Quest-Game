@@ -91,9 +91,27 @@ function resetAllColorBtns() {
     });
 }
 
+// Keyboard Shortcuts
+
+document.addEventListener("keydown", event => {
+    
+    if (event.key >= "1" && event.key <= "5") {
+        const index = parseInt(event.key) - 1;
+        
+        resetAllColorBtns();
+        
+        if (colorBtns[index]) {
+            colorBtns[index].isClicked = true;
+            colorBtns[index].tick.classList.toggle("transformed");
+        }
+    }
+});
+
 document.querySelectorAll(".colorBtns").forEach((colorBtn, index) => {
     colorBtn.addEventListener("click", () => {
+        
         resetAllColorBtns();
+        
         colorBtns[index].isClicked = true;
         currentColor = colorBtns[index].color;
         colorBtns[index].tick.classList.toggle("transformed");
