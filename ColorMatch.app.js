@@ -1,20 +1,34 @@
-// Generate Grid 5x5
+// Generate Grids
 
 const grid_5x5 = document.querySelector(".container_5x5");
-for (let i = 0; i < 25; i++) {
+for (let i = 0; i < 5 * 5; i++) {
     const newBox = document.createElement("div");
-    newBox.setAttribute("class", `div div${i}`);
+    newBox.setAttribute("class", "allDivs");
     grid_5x5.appendChild(newBox);
+}
+
+const grid_6x6 = document.querySelector(".container_6x6");
+for (let i = 0; i < 6 * 6; i++) {
+    const newBox = document.createElement("div");
+    newBox.setAttribute("class", "allDivs");
+    grid_6x6.appendChild(newBox);
+}
+
+const grid_7x7 = document.querySelector(".container_7x7");
+for (let i = 0; i < 7 * 7; i++) {
+    const newBox = document.createElement("div");
+    newBox.setAttribute("class", "allDivs");
+    grid_7x7.appendChild(newBox);
 }
 
 // Generate random numbers for divs
 
 const divNumbers_5x5 = [];
 const divColors_5x5 = [];
-const allBoxes = document.querySelectorAll(".div");
+const allBoxes = document.querySelectorAll(".allDivs");
 
 function updateNumberArray() {
-    document.querySelectorAll(".div").forEach((div, index) => {
+    allBoxes.forEach((div, index) => {
         divNumbers_5x5[index] = div.innerHTML;
     });
 }
@@ -22,16 +36,22 @@ function updateNumberArray() {
 function AddToColorArray(color, index) {
     if (divColors_5x5.length < index) { divColors_5x5.length = index; }
     
-    if (color === primaryColors[0]) {
-        divColors_5x5[ index ] = "1";
-    } else if (color === primaryColors[1]) {
-        divColors_5x5[ index ] = "2";
-    } else if (color === primaryColors[2]) {
-        divColors_5x5[ index ] = "3";
-    } else if (color === primaryColors[3]) {
-        divColors_5x5[ index ] = "4";
-    } else if (color === primaryColors[4]) {
-        divColors_5x5[ index ] = "5";
+    switch (color) {
+        case primaryColors[0]:
+            divColors_5x5[index] = "1";
+            break;
+        case primaryColors[1]:
+            divColors_5x5[index] = "2";
+            break;
+        case primaryColors[2]:
+            divColors_5x5[index] = "3";
+            break;
+        case primaryColors[3]:
+            divColors_5x5[index] = "4";
+            break;
+        case primaryColors[4]:
+            divColors_5x5[index] = "5";
+            break;
     }
     
     checkForWin();
@@ -103,6 +123,7 @@ document.addEventListener("keydown", event => {
         if (colorBtns[index]) {
             colorBtns[index].isClicked = true;
             colorBtns[index].tick.classList.toggle("transformed");
+            currentColor = colorBtns[index].color;
         }
     }
 });
@@ -115,6 +136,63 @@ document.querySelectorAll(".colorBtns").forEach((colorBtn, index) => {
         colorBtns[index].isClicked = true;
         currentColor = colorBtns[index].color;
         colorBtns[index].tick.classList.toggle("transformed");
+    });
+});
+
+// Grid Setting
+
+const gridBtns = document.querySelectorAll(".gridBtns");
+
+const gridBtn_5x5 = document.querySelector(".gridBtn_5x5");
+const gridBtn_6x6 = document.querySelector(".gridBtn_6x6");
+const gridBtn_7x7 = document.querySelector(".gridBtn_7x7");
+
+let isGridBtn1Active = true;
+let isGridBtn2Active = false;
+let isGridBtn3Active = false;
+
+function toggleGridSelection(gridBtn) {
+    isGridBtn1Active = (gridBtn === gridBtn_5x5);
+    isGridBtn2Active = (gridBtn === gridBtn_6x6);
+    isGridBtn3Active = (gridBtn === gridBtn_7x7);
+}
+
+function resetGridBtnsStyle() {
+    gridBtns.forEach(gridBtn => {
+        gridBtn.style.backgroundColor = "rgb(210, 210, 205)";
+    });
+}
+
+
+function showSelectedGrid(gridBtn) {
+    const grids = [grid_5x5, grid_6x6, grid_7x7];
+    const transformValues = ['465px', '560px', '655px'];
+    
+    grids.forEach((grid, index) => {
+        if (gridBtn !== gridBtns[index]) {
+            grid.style.zIndex = -2;
+            grid.style.opacity = 0;
+            grid.style.pointerEvents = "none";
+        } else {
+            grid.style.zIndex = 2;
+            grid.style.opacity = 1;
+            grid.style.pointerEvents = "auto";
+            document.documentElement.style.setProperty('--grid-transform-value', transformValues[index]);
+        }
+    });
+}
+
+
+gridBtns.forEach(gridBtn => {
+    gridBtn.addEventListener("click", () => {
+        resetGridBtnsStyle();
+        toggleGridSelection(gridBtn);
+        showSelectedGrid(gridBtn);
+        console.log(isGridBtn1Active, isGridBtn2Active, isGridBtn3Active);
+        gridBtn.style.backgroundColor = "rgb(185, 185, 185)";
+        allBoxes.forEach(box => {
+            box.style.backgroundColor = "rgb(200, 200, 195)";
+        })
     });
 });
 
