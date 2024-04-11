@@ -1,74 +1,119 @@
-// Generate Grids
+// Generate Dynamic Grids
 
 const grid_5x5 = document.querySelector(".container_5x5");
 for (let i = 0; i < 5 * 5; i++) {
     const newBox = document.createElement("div");
-    newBox.setAttribute("class", "allDivs");
+    newBox.setAttribute("class", "allDivs allDivs_5x5");
     grid_5x5.appendChild(newBox);
 }
 
 const grid_6x6 = document.querySelector(".container_6x6");
 for (let i = 0; i < 6 * 6; i++) {
     const newBox = document.createElement("div");
-    newBox.setAttribute("class", "allDivs");
+    newBox.setAttribute("class", "allDivs allDivs_6x6");
     grid_6x6.appendChild(newBox);
 }
 
 const grid_7x7 = document.querySelector(".container_7x7");
 for (let i = 0; i < 7 * 7; i++) {
     const newBox = document.createElement("div");
-    newBox.setAttribute("class", "allDivs");
+    newBox.setAttribute("class", "allDivs allDivs_7x7");
     grid_7x7.appendChild(newBox);
 }
 
 // Generate random numbers for divs
+// Add the values to divColor and divNumber arrays
 
 const divNumbers_5x5 = [];
+const divNumbers_6x6 = [];
+const divNumbers_7x7 = [];
+
 const divColors_5x5 = [];
+const divColors_6x6 = [];
+const divColors_7x7 = [];
+
 const allBoxes = document.querySelectorAll(".allDivs");
+const allBoxes_5x5 = document.querySelectorAll(".allDivs_5x5");
+const allBoxes_6x6 = document.querySelectorAll(".allDivs_6x6");
+const allBoxes_7x7 = document.querySelectorAll(".allDivs_7x7");
+
+let isGridBtnActive_5x5 = true;
+let isGridBtnActive_6x6 = false;
+let isGridBtnActive_7x7 = false;
 
 function updateNumberArray() {
-    allBoxes.forEach((div, index) => {
+    allBoxes_5x5.forEach((div, index) => {
         divNumbers_5x5[index] = div.innerHTML;
+    });
+    
+    allBoxes_6x6.forEach((div, index) => {
+        divNumbers_6x6[index] = div.innerHTML;
+    });
+    
+    allBoxes_7x7.forEach((div, index) => {
+        divNumbers_7x7[index] = div.innerHTML;
     });
 }
 
 function AddToColorArray(color, index) {
-    if (divColors_5x5.length < index) { divColors_5x5.length = index; }
+    let selectedDivColor;
+    let selectedGrid;
+    
+    if (isGridBtnActive_5x5) {
+        selectedDivColor = divColors_5x5;
+        selectedGrid = grid_5x5;
+    }
+    
+    else if (isGridBtnActive_6x6) {
+        selectedDivColor = divColors_6x6;
+        selectedGrid = grid_6x6;
+    }
+    
+    else if (isGridBtnActive_7x7) {
+        selectedDivColor = divColors_7x7;
+        selectedGrid = grid_7x7;
+    }
+    
+    if (selectedDivColor.length < index) {
+        selectedDivColor.length = index;
+    }
     
     switch (color) {
         case primaryColors[0]:
-            divColors_5x5[index] = "1";
+            selectedDivColor[index] = "1";
             break;
         case primaryColors[1]:
-            divColors_5x5[index] = "2";
+            selectedDivColor[index] = "2";
             break;
         case primaryColors[2]:
-            divColors_5x5[index] = "3";
+            selectedDivColor[index] = "3";
             break;
         case primaryColors[3]:
-            divColors_5x5[index] = "4";
+            selectedDivColor[index] = "4";
             break;
         case primaryColors[4]:
-            divColors_5x5[index] = "5";
+            selectedDivColor[index] = "5";
             break;
     }
     
-    checkForWin();
+    checkForWin(selectedGrid);
 }
 
-allBoxes.forEach((box, index) => {
-    box.textContent = Math.floor(Math.random() * 5) + 1;
-    updateNumberArray();
-    box.addEventListener("click", e => {
-        if (currentColor === undefined) {
-            alert("Select a color first!");
-        } else {
-            e.target.style.background = currentColor;
-            AddToColorArray(currentColor, index);
-        }
+for (let i = 0; i < 3; i++) {
+    const grids = [allBoxes_5x5, allBoxes_6x6, allBoxes_7x7,];
+    grids[i].forEach((box, index) => {
+        box.textContent = Math.floor(Math.random() * 5) + 1;
+        updateNumberArray();
+        box.addEventListener("click", e => {
+            if (currentColor === undefined) {
+                alert("Select a color first!");
+            } else {
+                e.target.style.background = currentColor;
+                AddToColorArray(currentColor, index);
+            }
+        });
     });
-});
+}
 
 // Color Palette
 
@@ -94,6 +139,13 @@ for (let i = 0; i < 5; i++) {
 const colorBtns = [];
 let currentColor;
 
+function resetAllColorBtns() {
+    colorBtns.forEach(btn => {
+        btn.isClicked = false;
+        btn.tick.classList.remove("transformed");
+    });
+}
+
 for (let i = 1; i <= 5; i++) {
     const newColorBtn = {
         button: document.querySelector(`.colorBtn${i}`),
@@ -104,22 +156,13 @@ for (let i = 1; i <= 5; i++) {
     colorBtns.push(newColorBtn);
 }
 
-function resetAllColorBtns() {
-    colorBtns.forEach(btn => {
-        btn.isClicked = false;
-        btn.tick.classList.remove("transformed");
-    });
-}
-
 // Keyboard Shortcuts
 
-document.addEventListener("keydown", event => {
+document.addEventListener("keydown", e => {
     
-    if (event.key >= "1" && event.key <= "5") {
-        const index = parseInt(event.key) - 1;
-        
+    if (e.key >= "1" && e.key <= "5") {
+        const index = parseInt(e.key) - 1;
         resetAllColorBtns();
-        
         if (colorBtns[index]) {
             colorBtns[index].isClicked = true;
             colorBtns[index].tick.classList.toggle("transformed");
@@ -130,9 +173,7 @@ document.addEventListener("keydown", event => {
 
 document.querySelectorAll(".colorBtns").forEach((colorBtn, index) => {
     colorBtn.addEventListener("click", () => {
-        
         resetAllColorBtns();
-        
         colorBtns[index].isClicked = true;
         currentColor = colorBtns[index].color;
         colorBtns[index].tick.classList.toggle("transformed");
@@ -142,25 +183,29 @@ document.querySelectorAll(".colorBtns").forEach((colorBtn, index) => {
 // Grid Setting
 
 const gridBtns = document.querySelectorAll(".gridBtns");
-
 const gridBtn_5x5 = document.querySelector(".gridBtn_5x5");
 const gridBtn_6x6 = document.querySelector(".gridBtn_6x6");
 const gridBtn_7x7 = document.querySelector(".gridBtn_7x7");
 
-let isGridBtn1Active = true;
-let isGridBtn2Active = false;
-let isGridBtn3Active = false;
-
-function toggleGridSelection(gridBtn) {
-    isGridBtn1Active = (gridBtn === gridBtn_5x5);
-    isGridBtn2Active = (gridBtn === gridBtn_6x6);
-    isGridBtn3Active = (gridBtn === gridBtn_7x7);
-}
-
-function resetGridBtnsStyle() {
+function resetAllGridsStyle() {
     gridBtns.forEach(gridBtn => {
         gridBtn.style.backgroundColor = "rgb(210, 210, 205)";
     });
+    
+    clearInterval(timeoutId);
+    allBoxes.forEach(box => {
+        box.style.backgroundColor = "rgb(200, 200, 195)";
+    });
+    
+    divColors_5x5.length = 0;
+    divColors_6x6.length = 0;
+    divColors_7x7.length = 0;
+}
+
+function toggleGridSelection(gridBtn) {
+    isGridBtnActive_5x5 = (gridBtn === gridBtn_5x5);
+    isGridBtnActive_6x6 = (gridBtn === gridBtn_6x6);
+    isGridBtnActive_7x7 = (gridBtn === gridBtn_7x7);
 }
 
 
@@ -177,19 +222,24 @@ function showSelectedGrid(gridBtn) {
             grid.style.zIndex = 2;
             grid.style.opacity = 1;
             grid.style.pointerEvents = "auto";
-            document.documentElement.style.setProperty('--grid-transform-value', transformValues[index]);
+            document.documentElement.style.setProperty(
+                '--grid-transform-value', transformValues[index]
+            );
         }
     });
 }
 
-
 gridBtns.forEach(gridBtn => {
     gridBtn.addEventListener("click", () => {
-        resetGridBtnsStyle();
+        resetAllGridsStyle();
         toggleGridSelection(gridBtn);
         showSelectedGrid(gridBtn);
-        console.log(isGridBtn1Active, isGridBtn2Active, isGridBtn3Active);
+        
         gridBtn.style.backgroundColor = "rgb(185, 185, 185)";
+        document.body.style.backgroundColor = "rgb(218, 220, 215)";
+        document.getElementById("winningTag").style.bottom = "-80px";
+        won = false;
+        
         allBoxes.forEach(box => {
             box.style.backgroundColor = "rgb(200, 200, 195)";
         })
@@ -199,17 +249,39 @@ gridBtns.forEach(gridBtn => {
 // Winning Sequence
 
 let won = false;
-function checkForWin() {
-    if (divColors_5x5.length === 25 && !(divColors_5x5.includes(undefined))) {
-        if (divNumbers_5x5.toString() !== divColors_5x5.toString()) {
+function checkForWin(divColors) {
+    if (won) {
+        if (isGridBtnActive_5x5 && divNumbers_5x5.toString() !== divColors_5x5.toString() ||
+            isGridBtnActive_6x6 && divNumbers_6x6.toString() !== divColors_6x6.toString() ||
+            isGridBtnActive_7x7 && divNumbers_7x7.toString() !== divColors_7x7.toString()) {
+            clearInterval(timeoutId);
             won = false;
-            stopWinningSequence();
             document.body.style.backgroundColor = "rgb(245, 184, 184)";
+            document.getElementById("winningTag").style.bottom = "-80px";
         }
-        else if (divNumbers_5x5.toString() === divColors_5x5.toString()) {
-            won = true;
-            startWinningSequence();
-            document.body.style.backgroundColor = "rgb(202, 240, 177)";
+    } else {
+        if ((divColors_5x5.length === 25 && !divColors_5x5.includes(undefined)) ||
+            (divColors_6x6.length === 36 && !divColors_6x6.includes(undefined)) ||
+            (divColors_7x7.length === 49 && !divColors_7x7.includes(undefined))) {
+            if (
+                divNumbers_5x5.toString() !== divColors_5x5.toString() &&
+                divNumbers_6x6.toString() !== divColors_6x6.toString() &&
+                divNumbers_7x7.toString() !== divColors_7x7.toString()
+            ) {
+                won = false;
+                document.body.style.backgroundColor = "rgb(245, 184, 184)";
+                document.getElementById("winningTag").style.bottom = "-80px";
+            }
+            else if (
+                divNumbers_5x5.toString() === divColors_5x5.toString() ||
+                divNumbers_6x6.toString() === divColors_6x6.toString() ||
+                divNumbers_7x7.toString() === divColors_7x7.toString()
+            ) {
+                won = true;
+                winningSequence(divColors);
+                document.body.style.backgroundColor = "rgb(202, 240, 177)";
+                document.getElementById("winningTag").style.bottom = "40px";
+            }
         }
     }
 }
@@ -235,18 +307,11 @@ const randomColors = [
 
 let timeoutId;
 
-function startWinningSequence() {
+function winningSequence(divColors) {
     timeoutId = setInterval(() => {
-        grid_5x5.querySelectorAll("div").forEach(div => {
+        divColors.querySelectorAll("div").forEach(div => {
             const color = randomColors[Math.floor(Math.random() * randomColors.length)];
             div.style.backgroundColor = color;
         });
     }, 300);
-}
-
-function stopWinningSequence() {
-    clearInterval(timeoutId);
-        grid_5x5.querySelectorAll("div").forEach((div, index) => {
-            div.style.backgroundColor = primaryColors[divColors_5x5[index] - 1]
-        });
 }
