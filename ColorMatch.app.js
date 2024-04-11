@@ -41,17 +41,25 @@ let isGridBtnActive_5x5 = true;
 let isGridBtnActive_6x6 = false;
 let isGridBtnActive_7x7 = false;
 
-function updateNumberArray() {
-    allBoxes_5x5.forEach((div, index) => {
-        divNumbers_5x5[index] = div.innerHTML;
-    });
+function updateNumberArrays() {
+    const boxArrays = [allBoxes_5x5, allBoxes_6x6, allBoxes_7x7];
+    const numberArrays = [divNumbers_5x5, divNumbers_6x6, divNumbers_7x7];
     
-    allBoxes_6x6.forEach((div, index) => {
-        divNumbers_6x6[index] = div.innerHTML;
+    boxArrays.forEach((boxArray, i) => {
+        boxArray.forEach((div, index) => {
+            numberArrays[i][index] = div.innerHTML;
+        });
     });
+}
+
+function updateColorArrays() {
+    const boxArrays = [allBoxes_5x5, allBoxes_6x6, allBoxes_7x7];
+    const colorArrays = [divColors_5x5, divColors_6x6, divColors_7x7];
     
-    allBoxes_7x7.forEach((div, index) => {
-        divNumbers_7x7[index] = div.innerHTML;
+    boxArrays.forEach((boxArray, i) => {
+        boxArray.forEach((div, index) => {
+            div.style.backgroundColor = primaryColors[colorArrays[i][index] - 1];
+        });
     });
 }
 
@@ -96,14 +104,14 @@ function AddToColorArray(color, index) {
             break;
     }
     
-    checkForWin(selectedGrid);
+    checkForWin(selectedGrid, selectedDivColor);
 }
 
 for (let i = 0; i < 3; i++) {
     const grids = [allBoxes_5x5, allBoxes_6x6, allBoxes_7x7,];
     grids[i].forEach((box, index) => {
         box.textContent = Math.floor(Math.random() * 5) + 1;
-        updateNumberArray();
+        updateNumberArrays();
         box.addEventListener("click", e => {
             if (currentColor === undefined) {
                 alert("Select a color first!");
@@ -242,27 +250,41 @@ gridBtns.forEach(gridBtn => {
         
         allBoxes.forEach(box => {
             box.style.backgroundColor = "rgb(200, 200, 195)";
-        })
+        });
     });
 });
 
 // Winning Sequence
 
 let won = false;
-function checkForWin(divColors) {
+function checkForWin(selectedGrid) {
     if (won) {
-        if (isGridBtnActive_5x5 && divNumbers_5x5.toString() !== divColors_5x5.toString() ||
-            isGridBtnActive_6x6 && divNumbers_6x6.toString() !== divColors_6x6.toString() ||
-            isGridBtnActive_7x7 && divNumbers_7x7.toString() !== divColors_7x7.toString()) {
+        const isGridActive_5x5 =
+            isGridBtnActive_5x5 &&
+            divNumbers_5x5.toString() !== divColors_5x5.toString();
+        const isGridActive_6x6 =
+            isGridBtnActive_6x6 &&
+            divNumbers_6x6.toString() !== divColors_6x6.toString();
+        const isGridActive_7x7 =
+            isGridBtnActive_7x7 &&
+            divNumbers_7x7.toString() !== divColors_7x7.toString();
+        
+        if (isGridActive_5x5 || isGridActive_6x6 || isGridActive_7x7) {
             clearInterval(timeoutId);
             won = false;
+            updateColorArrays();
             document.body.style.backgroundColor = "rgb(245, 184, 184)";
             document.getElementById("winningTag").style.bottom = "-80px";
         }
     } else {
-        if ((divColors_5x5.length === 25 && !divColors_5x5.includes(undefined)) ||
-            (divColors_6x6.length === 36 && !divColors_6x6.includes(undefined)) ||
-            (divColors_7x7.length === 49 && !divColors_7x7.includes(undefined))) {
+        if (
+            (divColors_5x5.length === 25 &&
+            !divColors_5x5.includes(undefined)) ||
+            (divColors_6x6.length === 36 &&
+            !divColors_6x6.includes(undefined)) ||
+            (divColors_7x7.length === 49 &&
+            !divColors_7x7.includes(undefined))
+            ) {
             if (
                 divNumbers_5x5.toString() !== divColors_5x5.toString() &&
                 divNumbers_6x6.toString() !== divColors_6x6.toString() &&
@@ -271,14 +293,13 @@ function checkForWin(divColors) {
                 won = false;
                 document.body.style.backgroundColor = "rgb(245, 184, 184)";
                 document.getElementById("winningTag").style.bottom = "-80px";
-            }
-            else if (
+            } else if (
                 divNumbers_5x5.toString() === divColors_5x5.toString() ||
                 divNumbers_6x6.toString() === divColors_6x6.toString() ||
                 divNumbers_7x7.toString() === divColors_7x7.toString()
             ) {
                 won = true;
-                winningSequence(divColors);
+                winningSequence(selectedGrid);
                 document.body.style.backgroundColor = "rgb(202, 240, 177)";
                 document.getElementById("winningTag").style.bottom = "40px";
             }
@@ -307,11 +328,24 @@ const randomColors = [
 
 let timeoutId;
 
-function winningSequence(divColors) {
+function winningSequence(selectedGrid) {
     timeoutId = setInterval(() => {
-        divColors.querySelectorAll("div").forEach(div => {
+        selectedGrid.querySelectorAll("div").forEach(div => {
             const color = randomColors[Math.floor(Math.random() * randomColors.length)];
             div.style.backgroundColor = color;
         });
-    }, 300);
+    }, 300); // Delay in milliseconds
 }
+
+function restartBtnAction() {
+    resetAllGridsStyle();
+    allBoxes.forEach(box => {
+        box.style.backgroundColor = "rgb(200, 200, 195)";
+    });
+    document.body.style.backgroundColor = "rgb(218, 220, 215)";
+    document.getElementById("winningTag").style.bottom = "-80px";
+    won = false;
+}
+
+const restartBtn = document.querySelector("#restartBtn_container");
+restartBtn.addEventListener('click', restartBtnAction());
