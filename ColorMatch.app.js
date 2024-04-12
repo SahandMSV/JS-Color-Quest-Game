@@ -195,11 +195,15 @@ const gridBtn_5x5 = document.querySelector(".gridBtn_5x5");
 const gridBtn_6x6 = document.querySelector(".gridBtn_6x6");
 const gridBtn_7x7 = document.querySelector(".gridBtn_7x7");
 
+const shuffleBtns = document.querySelectorAll(".shuffleIcon");
+const shuffleBtn1 = document.querySelector(".shuffleIcon1");
+const shuffleBtn2 = document.querySelector(".shuffleIcon2");
+const shuffleBtn3 = document.querySelector(".shuffleIcon3");
+
+let translateXVal = "-45px";
+shuffleBtn1.style.transform = `translateX(${translateXVal})`; // Selected by default
+
 function resetAllGridsStyle() {
-    gridBtns.forEach(gridBtn => {
-        gridBtn.style.backgroundColor = "rgb(210, 210, 205)";
-    });
-    
     clearInterval(timeoutId);
     allBoxes.forEach(box => {
         box.style.backgroundColor = "rgb(200, 200, 195)";
@@ -214,8 +218,13 @@ function toggleGridSelection(gridBtn) {
     isGridBtnActive_5x5 = (gridBtn === gridBtn_5x5);
     isGridBtnActive_6x6 = (gridBtn === gridBtn_6x6);
     isGridBtnActive_7x7 = (gridBtn === gridBtn_7x7);
+    
+    gridBtns.forEach(btn => {
+        btn.style.backgroundColor = "rgb(210, 210, 205)";
+    });
+    
+    gridBtn.style.backgroundColor = "rgb(185, 185, 185)";
 }
-
 
 function showSelectedGrid(gridBtn) {
     const grids = [grid_5x5, grid_6x6, grid_7x7];
@@ -237,13 +246,30 @@ function showSelectedGrid(gridBtn) {
     });
 }
 
+function toggleShuffleButton() {
+    shuffleBtns.forEach(btn => {
+        btn.style.transform = "translateX(0)";
+    });
+    
+    if (isGridBtnActive_5x5) {
+        shuffleBtn1.style.transform = `translateX(${translateXVal})`;
+    }
+    else if (isGridBtnActive_6x6) {
+        shuffleBtn2.style.transform = `translateX(${translateXVal})`;
+    }
+    else if (isGridBtnActive_7x7) {
+        shuffleBtn3.style.transform = `translateX(${translateXVal})`;
+    }
+}
+
+gridBtn_5x5.style.backgroundColor = "rgb(185, 185, 185)";
 gridBtns.forEach(gridBtn => {
     gridBtn.addEventListener("click", () => {
         resetAllGridsStyle();
-        toggleGridSelection(gridBtn);
         showSelectedGrid(gridBtn);
+        toggleGridSelection(gridBtn);
+        toggleShuffleButton(gridBtn);
         
-        gridBtn.style.backgroundColor = "rgb(185, 185, 185)";
         document.body.style.backgroundColor = "rgb(218, 220, 215)";
         document.getElementById("winningTag").style.bottom = "-80px";
         won = false;
@@ -251,6 +277,25 @@ gridBtns.forEach(gridBtn => {
         allBoxes.forEach(box => {
             box.style.backgroundColor = "rgb(200, 200, 195)";
         });
+    });
+});
+
+const boxArrays = [allBoxes_5x5, allBoxes_6x6, allBoxes_7x7];
+shuffleBtns.forEach((btn, index) => {
+    btn.addEventListener('click', () => {
+        resetAllGridsStyle();
+        document.body.style.backgroundColor = "rgb(218, 220, 215)";
+        document.getElementById("winningTag").style.bottom = "-80px";
+        won = false;
+        
+        allBoxes.forEach(box => {
+            box.style.backgroundColor = "rgb(200, 200, 195)";
+        });
+        
+        boxArrays[index].forEach(box => {
+            box.textContent = Math.floor(Math.random() * 5) + 1;
+        });
+        updateNumberArrays();
     });
 });
 
@@ -339,13 +384,14 @@ function winningSequence(selectedGrid) {
 
 function restartBtnAction() {
     resetAllGridsStyle();
-    allBoxes.forEach(box => {
-        box.style.backgroundColor = "rgb(200, 200, 195)";
-    });
     document.body.style.backgroundColor = "rgb(218, 220, 215)";
     document.getElementById("winningTag").style.bottom = "-80px";
     won = false;
+    
+    allBoxes.forEach(box => {
+        box.style.backgroundColor = "rgb(200, 200, 195)";
+    });
 }
 
 const restartBtn = document.querySelector("#restartBtn_container");
-restartBtn.addEventListener('click', restartBtnAction());
+restartBtn.addEventListener('click', restartBtnAction);

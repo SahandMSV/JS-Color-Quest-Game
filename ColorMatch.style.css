@@ -208,10 +208,6 @@ body {
     gap: 10px;
 }
 
-.gridBtns:nth-child(1) {
-    background-color: rgb(185, 185, 185);
-}
-
 .gridBtns {
     display: flex;
     justify-content: center;
@@ -227,6 +223,48 @@ body {
     
     transition: background-color 0.3s ease;
 }
+
+.gridBtns:nth-child(1) {
+    background-color: rgb(185, 185, 185);
+}
+
+/* Shuffle Buttons */
+
+.shuffle_icons_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 45px;
+    
+    position: absolute;
+    right: 75px;
+    top: 50%;
+    transform: translateY(-50%);
+    
+    height: 190px;
+    z-index: 0;
+}
+
+.shuffle_icons_container > svg {
+    width: 22px;
+    height: 22px;
+}
+
+.shuffle_icons_container > svg:hover {
+    cursor: pointer;
+}
+
+.shuffleIcon {
+    transition: width 0.10s ease, transform 0.35s ease;
+}
+
+.shuffleIcon:active {
+    width: 20px;
+    transform: translateX(1px);
+}
+
+/* Others */
 
 #winningTag {
     position: absolute;
